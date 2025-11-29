@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { getVendorsByModule } from "../api/api";
-import { Link, useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
-export default function VendorsPage(){
+export default function Vendors() {
   const { moduleId } = useParams();
-  const [vendors,setVendors] = useState([]);
-  useEffect(()=> {
-    if(!moduleId) return;
-    getVendorsByModule(moduleId).then(r=> setVendors(r.data || []));
-  },[moduleId]);
+  const [vendors, setVendors] = useState([]);
+
+  useEffect(() => {
+    getVendorsByModule(moduleId).then((res) => setVendors(res.data));
+  }, [moduleId]);
+
   return (
-    <div className="container">
-      <h2>Vendors</h2>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:12}}>
-        {vendors.map(v=> <Link key={v._id} to={`/vendor/${v._id}/products`} className="card"><h3>{v.name}</h3><p>{v.address}</p></Link>)}
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Vendors</h1>
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {vendors.map((v) => (
+          <Link
+            key={v._id}
+            to={`/products/${v._id}`}
+            className="border rounded-lg shadow p-4 hover:shadow-lg hover:bg-gray-50 transition"
+          >
+            <img
+              src={`/assets/${v.image}`}
+              alt={v.name}
+              className="h-32 w-full object-cover rounded"
+            />
+            <h2 className="mt-2 text-lg font-semibold text-center">{v.name}</h2>
+          </Link>
+        ))}
       </div>
     </div>
   );
